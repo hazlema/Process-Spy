@@ -23,59 +23,128 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tree = new System.Windows.Forms.TreeView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.txtProcessID = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnRefresh = new System.Windows.Forms.ToolStripButton();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.killProcessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.killProcessTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtProcessCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tree
             // 
+            this.tree.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(70)))), ((int)(((byte)(70)))), ((int)(((byte)(70)))));
+            this.tree.ContextMenuStrip = this.contextMenuStrip1;
             this.tree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tree.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tree.ForeColor = System.Drawing.Color.White;
+            this.tree.FullRowSelect = true;
+            this.tree.Indent = 10;
+            this.tree.ItemHeight = 26;
+            this.tree.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.tree.Location = new System.Drawing.Point(0, 25);
+            this.tree.Margin = new System.Windows.Forms.Padding(12, 10, 12, 10);
             this.tree.Name = "tree";
-            this.tree.Size = new System.Drawing.Size(292, 222);
+            this.tree.ShowPlusMinus = false;
+            this.tree.Size = new System.Drawing.Size(345, 222);
             this.tree.TabIndex = 0;
             this.tree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tree_NodeMouseClick);
             // 
             // toolStrip1
             // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnRefresh});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(292, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(345, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.txtProcessID});
+            this.txtProcessID,
+            this.txtProcessCount});
             this.statusStrip1.Location = new System.Drawing.Point(0, 247);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(292, 22);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(345, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // txtProcessID
             // 
+            this.txtProcessID.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtProcessID.Name = "txtProcessID";
-            this.txtProcessID.Size = new System.Drawing.Size(66, 17);
+            this.txtProcessID.Size = new System.Drawing.Size(69, 17);
             this.txtProcessID.Text = "Idle (pid: 0)";
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.btnRefresh.Image = ((System.Drawing.Image)(resources.GetObject("btnRefresh.Image")));
+            this.btnRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(50, 22);
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.killProcessToolStripMenuItem,
+            this.killProcessTreeToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(160, 48);
+            // 
+            // killProcessToolStripMenuItem
+            // 
+            this.killProcessToolStripMenuItem.Name = "killProcessToolStripMenuItem";
+            this.killProcessToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.killProcessToolStripMenuItem.Text = "Kill Process";
+            // 
+            // killProcessTreeToolStripMenuItem
+            // 
+            this.killProcessTreeToolStripMenuItem.Name = "killProcessTreeToolStripMenuItem";
+            this.killProcessTreeToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.killProcessTreeToolStripMenuItem.Text = "Kill Process Tree";
+            // 
+            // txtProcessCount
+            // 
+            this.txtProcessCount.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtProcessCount.Name = "txtProcessCount";
+            this.txtProcessCount.Size = new System.Drawing.Size(228, 17);
+            this.txtProcessCount.Spring = true;
+            this.txtProcessCount.Text = "Loading";
+            this.txtProcessCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 269);
+            this.ClientSize = new System.Drawing.Size(345, 269);
             this.Controls.Add(this.tree);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "Form1";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Process Spy";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -87,6 +156,11 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel txtProcessID;
+        private System.Windows.Forms.ToolStripButton btnRefresh;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem killProcessToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem killProcessTreeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel txtProcessCount;
     }
 }
 
