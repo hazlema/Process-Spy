@@ -44,6 +44,7 @@ namespace Process_Spy {
             return branch;
         }
 
+        // Search for the pid of an application
         private string FindPid(string app) {
             foreach (Processes p in Running) {
                 if (p.Name == app)
