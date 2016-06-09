@@ -44,6 +44,15 @@ namespace Process_Spy {
             return branch;
         }
 
+        private string FindPid(string app) {
+            foreach (Processes p in Running) {
+                if (p.Name == app)
+                    return p.ID.ToString();
+            }
+
+            return "0";
+        }
+
         // Refresh the tree
         private void TreeRefresh() {
             Running = GetProcesses();            // Build Processes
@@ -51,12 +60,15 @@ namespace Process_Spy {
             tree.Nodes.Clear();                  // Clear Tree
             Root = new TreeNode("Idle");         // Process #0
             Root.Tag = 0;                        // Process Number
+            Root.Name = "0";                     // Key
             tree.Nodes.Add(BuildTree(Root, 0));  // Add the rest
 
-            tree.SelectedNode = Root;
-            Root.Expand();
+            // Focus explorer if you can
+            tree.SelectedNode = tree.Nodes.Find(FindPid("explorer"), true)[0];
+            tree.SelectedNode.Expand();
+            tree.SelectedNode.EnsureVisible();
+
             txtProcessCount.Text = "Processes: " + Running.Count;
-            Root.EnsureVisible();
         }
 
         // Recursively crawl a node
