@@ -11,7 +11,9 @@ namespace Process_Spy {
         }
 
         List<Processes> Running = new List<Processes>();  // We only want a snapshot
+        List<String> tmp = new List<string>();
         TreeNode Root;
+        TreeNode LastNode;
 
         // Build process snapshot
         private List<Processes> GetProcesses() {
@@ -32,6 +34,7 @@ namespace Process_Spy {
                 if (p.Parent == pid) {
                     TreeNode NewBranch = new TreeNode(p.Name);
                     NewBranch.Tag = p.ID;
+                    NewBranch.Name = p.ID.ToString();
 
                     branch.Nodes.Add(NewBranch);
                     BuildTree(NewBranch, p.ID);
@@ -51,14 +54,25 @@ namespace Process_Spy {
             tree.Nodes.Add(BuildTree(Root, 0));  // Add the rest
 
             tree.SelectedNode = Root;
-            tree.ExpandAll();
-            txtProcessCount.Text = "Processes: " + (Running.Count/3) + 1;
+            Root.Expand();
+            txtProcessCount.Text = "Processes: " + (Running.Count / 3) + 1;
             Root.EnsureVisible();
         }
 
+        // Recursively crawl a node
+        private void treeCrawl(TreeNode n) {
+            tmp.Add(n.Tag.ToString());
+
+            foreach (TreeNode thisNode in n.Nodes) {
+                treeCrawl(thisNode);
+            }
+        }
+
         private void tree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-            if (e.Node != null)
+            if (e.Node != null) {
                 txtProcessID.Text = $"{e.Node.Text} (pid: {e.Node.Tag.ToString()})";
+                LastNode = e.Node;
+            }
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e) {
@@ -67,6 +81,41 @@ namespace Process_Spy {
 
         private void Form1_Load(object sender, EventArgs e) {
             TreeRefresh();
+        }
+
+        private void ctxKill_Click(object sender, EventArgs e) {
+            Debug.WriteLine($"Kill: {LastNode.Text} ({LastNode.Tag})");
+
+            if (Sys.kill(LastNode.Tag.ToString())) {
+                LastNode.Remove();
+            } else {
+                MessageBox.Show(this, $"Error occurred killing {LastNode.Text}", "Process Spy");
+                TreeRefresh();
+            }
+        }
+
+
+        private void ctxKillTree_Click(object sender, EventArgs e) {
+            bool result = true;
+
+            tmp.Clear();
+            treeCrawl(LastNode);
+
+            foreach (string pid in tmp) {
+                if (!Sys.kill(pid)) {
+                    result = false;
+                } else {
+                    TreeNode[] all = Root.Nodes.Find(pid, true);
+                    foreach (TreeNode n in all) {
+                        n.Remove();
+                    }
+                }
+            }
+
+            if (!result) {
+                MessageBox.Show(this, "Error occurred killing one or more processes", "Process Spy");
+                TreeRefresh();
+            }
         }
     }
 }
