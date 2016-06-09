@@ -55,7 +55,7 @@ namespace Process_Spy {
 
             tree.SelectedNode = Root;
             Root.Expand();
-            txtProcessCount.Text = "Processes: " + (Running.Count / 3) + 1;
+            txtProcessCount.Text = "Processes: " + Running.Count;
             Root.EnsureVisible();
         }
 
