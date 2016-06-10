@@ -68,12 +68,14 @@
             this.ctxKill.Name = "ctxKill";
             this.ctxKill.Size = new System.Drawing.Size(159, 22);
             this.ctxKill.Text = "Kill Process";
+            this.ctxKill.Click += new System.EventHandler(this.ContextMenu);
             // 
             // ctxKillTree
             // 
             this.ctxKillTree.Name = "ctxKillTree";
             this.ctxKillTree.Size = new System.Drawing.Size(159, 22);
             this.ctxKillTree.Text = "Kill Process Tree";
+            this.ctxKillTree.Click += new System.EventHandler(this.ContextMenu);
             // 
             // statusStrip1
             // 

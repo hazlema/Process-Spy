@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Process_Spy {
     public partial class Form1 : Form {
 
         PidList Running = new PidList();
+        TreeNode CurrentNode;
 
         public Form1() {
             InitializeComponent();
@@ -52,6 +54,7 @@ namespace Process_Spy {
                 
                 TreeNode[] t = PidTree.Nodes.Find("0", true);  // Expand Idle
                 t[0].Expand();
+                CurrentNode = t[0];
                 txtProcessID.Text = $"Idle (0)";
 
                 // Expand Explorer
@@ -63,11 +66,12 @@ namespace Process_Spy {
 
                     txtProcessID.Text = $"{tmpPid.Name} ({tmpPid.Id})";
                     PidTree.SelectedNode = t[0];
+                    CurrentNode = t[0];
                     t[0].EnsureVisible();
                 }
-
-                txtProcessCount.Text = $"Processes: {Running.Count}";
             }
+
+            txtProcessCount.Text = $"Processes: {Running.Count}";
         }
 
         // Adds "some" of the nodes to the Tree
@@ -118,8 +122,27 @@ namespace Process_Spy {
             }
         }
 
+        // UI: Click on TreeNode
+        //
         private void NodeClick(object sender, TreeNodeMouseClickEventArgs e) {
             txtProcessID.Text = $"{e.Node.Text} ({e.Node.Name})";
+            CurrentNode = e.Node;
+        }
+
+        // UI: Selected something from the context menu
+        //
+        private new void ContextMenu(object sender, EventArgs e) {
+            string cmd = ((ToolStripMenuItem)sender).Text;
+
+            switch (cmd) {
+                case "Kill Process":
+                    int pid = Convert.ToInt32(CurrentNode.Name);
+
+                    Process.GetProcessById(pid).Kill();
+                    break;
+
+                case "Kill Process Tree": break;
+            }
         }
     }
 }
