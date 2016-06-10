@@ -1,134 +1,118 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Process_Spy {
     public partial class Form1 : Form {
 
+        PidList Running = new PidList();
+
         public Form1() {
             InitializeComponent();
         }
 
-        List<Processes> Running = new List<Processes>();  // We only want a snapshot
-        List<String> tmp = new List<string>();
-        TreeNode Root;
-        TreeNode LastNode;
-
-        // Build process snapshot
-        private List<Processes> GetProcesses() {
-            Process[] proc = Process.GetProcesses();
-            Running.Clear();
-
-            foreach (Process thisProc in proc) {
-                if (thisProc.Id != 0)   // Avoids loop
-                    Running.Add(new Processes(thisProc.ProcessName, thisProc.Id, thisProc.Parent().Id));
-            }
-
-            return Running;
+        private void Form1_Load(object sender, EventArgs e) {
+            TreeRefresh(true); // Full refresh
         }
-
-        // Build a branch
-        private TreeNode BuildTree(TreeNode branch, int pid) {
-            foreach (Processes p in Running) {
-                if (p.Parent == pid) {
-                    TreeNode NewBranch = new TreeNode(p.Name);
-                    NewBranch.Tag = p.ID;
-                    NewBranch.Name = p.ID.ToString();
-
-                    branch.Nodes.Add(NewBranch);
-                    BuildTree(NewBranch, p.ID);
-                }
-            }
-
-            return branch;
-        }
-
-        // Search for the pid of an application
-        private string FindPid(string app) {
-            foreach (Processes p in Running) {
-                if (p.Name == app)
-                    return p.ID.ToString();
-            }
-
-            return "0";
+        private void UpdatePids_Tick(object sender, EventArgs e) {
+            TreeRefresh(false);  // Updates only
         }
 
         // Refresh the tree
-        private void TreeRefresh() {
-            Running = GetProcesses();            // Build Processes
+        //
+        private void TreeRefresh(bool FullRefresh) {
+            int KillSwitch = 0;
+            PidList Updates = new PidList();
 
-            tree.Nodes.Clear();                  // Clear Tree
-            Root = new TreeNode("Idle");         // Process #0
-            Root.Tag = 0;                        // Process Number
-            Root.Name = "0";                     // Key
-            tree.Nodes.Add(BuildTree(Root, 0));  // Add the rest
+            Updates.GetSystemPids(true);             // Load system processes
+            Updates.Remove("idle", PidFields.Name);  // Remove the Idles
+            Running.Remove("idle", PidFields.Name);
 
-            // Focus explorer if you can
-            tree.SelectedNode = tree.Nodes.Find(FindPid("explorer"), true)[0];
-            tree.SelectedNode.Expand();
-            tree.SelectedNode.EnsureVisible();
+            if (FullRefresh) {                       // Clear the running processes
+                Running.Clear();                     // so the Diff will think   
+                PidTree.Nodes.Clear();                  // everything's new  
 
-            txtProcessCount.Text = "Processes: " + Running.Count;
-        }
+                TreeNode Root = new TreeNode("Idle");  // Add Idle process to the tree
+                Root.Name = "0";
+                PidTree.Nodes.Add(Root);
+            }
 
-        // Recursively crawl a node
-        private void treeCrawl(TreeNode n) {
-            tmp.Add(n.Tag.ToString());
+            PidDiff Result = Running.Diff(Updates);     // Execute a Diff
 
-            foreach (TreeNode thisNode in n.Nodes) {
-                treeCrawl(thisNode);
+            PruneBranches(Result.Removed);              // Kill Removed
+
+            // Add nodes loop
+            //
+            while (Result.Added.Count != 0 && KillSwitch < 9) {
+                Result.Added = AddBranches(Result.Added);
+                KillSwitch++;
+            }
+
+            if (FullRefresh) {                       // Collapse the Tree
+                PidTree.CollapseAll();
+                
+                TreeNode[] t = PidTree.Nodes.Find("0", true);  // Expand Idle
+                t[0].Expand();
+
+                // Expand Explorer
+                //
+                Pid tmpPid = Running.Find("explorer", PidFields.Name);  // Search for explorer
+                if (tmpPid != null) {
+                    t = PidTree.Nodes.Find(tmpPid.Id.ToString(), true); // Highlight explorer
+                    t[0].Expand();
+
+                    PidTree.SelectedNode = t[0];
+                    t[0].EnsureVisible();
+                }
             }
         }
 
-        private void tree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-            if (e.Node != null) {
-                txtProcessID.Text = $"{e.Node.Text} (pid: {e.Node.Tag.ToString()})";
-                LastNode = e.Node;
-            }
-        }
+        // Adds "some" of the nodes to the Tree
+        // May need to be run more then once to process them all.  This is because
+        // children can have lower pid's then the parents.  (Don't ask me how or why)
+        //
+        private PidList AddBranches(PidList Updates) {
+            PidList Retry = new PidList();      // In some weird instances children 
+                                                // can have a lower pid then the parent
+                                                // So we have to do retry's
 
-        private void toolStripButton1_Click(object sender, EventArgs e) {
-            TreeRefresh();
-        }
+            Updates.Sort(PidFields.Parent);
 
-        private void Form1_Load(object sender, EventArgs e) {
-            TreeRefresh();
-        }
+            foreach (Pid p in Updates) {
+                TreeNode tmp = new TreeNode(p.Name);  // Create the node
+                tmp.Name = p.Id.ToString();           // Set it's key
 
-        private void ctxKill_Click(object sender, EventArgs e) {
-            Debug.WriteLine($"Kill: {LastNode.Text} ({LastNode.Tag})");
+                // Look for its parent process in the tree
+                //
+                TreeNode[] t = PidTree.Nodes.Find(p.Parent.ToString(), true);
 
-            if (Sys.kill(LastNode.Tag.ToString())) {
-                LastNode.Remove();
-            } else {
-                MessageBox.Show(this, $"Error occurred killing {LastNode.Text}", "Process Spy");
-                TreeRefresh();
-            }
-        }
+                if (t.Length == 0) { // Not found
+                    Retry.Add(new Pid(p.Name, p.Id, p.Parent));
+                } else { // Found
+                    t[0].Nodes.Add(tmp);
+                    t[0].Expand();
 
-
-        private void ctxKillTree_Click(object sender, EventArgs e) {
-            bool result = true;
-
-            tmp.Clear();
-            treeCrawl(LastNode);
-
-            foreach (string pid in tmp) {
-                if (!Sys.kill(pid)) {
-                    result = false;
-                } else {
-                    TreeNode[] all = Root.Nodes.Find(pid, true);
-                    foreach (TreeNode n in all) {
-                        n.Remove();
-                    }
+                    // Add as a running process
+                    //
+                    Running.Add(new Pid(p.Name, p.Id, p.Parent));
                 }
             }
 
-            if (!result) {
-                MessageBox.Show(this, "Error occurred killing one or more processes", "Process Spy");
-                TreeRefresh();
+            return Retry;
+        }
+
+        // Remove nodes from the tree
+        // TODO: Re-parent orphans
+        //
+        private void PruneBranches(PidList Updates) {
+            foreach (Pid p in Updates) {
+                TreeNode[] t = PidTree.Nodes.Find(p.Id.ToString(), true);
+
+                if (t.Length != 0) {
+                    Running.Remove(p.Id, PidFields.Id);
+                    t[0].Remove();
+                }
             }
         }
+
     }
 }
