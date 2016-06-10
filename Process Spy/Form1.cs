@@ -52,6 +52,7 @@ namespace Process_Spy {
                 
                 TreeNode[] t = PidTree.Nodes.Find("0", true);  // Expand Idle
                 t[0].Expand();
+                txtProcessID.Text = $"Idle (0)";
 
                 // Expand Explorer
                 //
@@ -60,9 +61,12 @@ namespace Process_Spy {
                     t = PidTree.Nodes.Find(tmpPid.Id.ToString(), true); // Highlight explorer
                     t[0].Expand();
 
+                    txtProcessID.Text = $"{tmpPid.Name} ({tmpPid.Id})";
                     PidTree.SelectedNode = t[0];
                     t[0].EnsureVisible();
                 }
+
+                txtProcessCount.Text = $"Processes: {Running.Count}";
             }
         }
 
@@ -114,5 +118,8 @@ namespace Process_Spy {
             }
         }
 
+        private void NodeClick(object sender, TreeNodeMouseClickEventArgs e) {
+            txtProcessID.Text = $"{e.Node.Text} ({e.Node.Name})";
+        }
     }
 }

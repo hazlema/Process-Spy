@@ -49,10 +49,11 @@
             this.PidTree.ItemHeight = 22;
             this.PidTree.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
             this.PidTree.Location = new System.Drawing.Point(0, 0);
-            this.PidTree.Margin = new System.Windows.Forms.Padding(12, 10, 12, 10);
+            this.PidTree.Margin = new System.Windows.Forms.Padding(12, 12, 12, 12);
             this.PidTree.Name = "PidTree";
-            this.PidTree.Size = new System.Drawing.Size(314, 334);
+            this.PidTree.Size = new System.Drawing.Size(314, 389);
             this.PidTree.TabIndex = 0;
+            this.PidTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.NodeClick);
             // 
             // contextMenuStrip1
             // 
@@ -79,7 +80,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.txtProcessID,
             this.txtProcessCount});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 334);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 389);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 16, 0);
             this.statusStrip1.Size = new System.Drawing.Size(314, 22);
@@ -88,16 +89,16 @@
             // 
             // txtProcessID
             // 
-            this.txtProcessID.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtProcessID.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtProcessID.Name = "txtProcessID";
-            this.txtProcessID.Size = new System.Drawing.Size(69, 17);
+            this.txtProcessID.Size = new System.Drawing.Size(66, 17);
             this.txtProcessID.Text = "Idle (pid: 0)";
             // 
             // txtProcessCount
             // 
-            this.txtProcessCount.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtProcessCount.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtProcessCount.Name = "txtProcessCount";
-            this.txtProcessCount.Size = new System.Drawing.Size(228, 17);
+            this.txtProcessCount.Size = new System.Drawing.Size(231, 17);
             this.txtProcessCount.Spring = true;
             this.txtProcessCount.Text = "Loading";
             this.txtProcessCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -110,12 +111,13 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(314, 356);
+            this.ClientSize = new System.Drawing.Size(314, 411);
             this.Controls.Add(this.PidTree);
             this.Controls.Add(this.statusStrip1);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Form1";
