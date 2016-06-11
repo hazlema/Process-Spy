@@ -72,11 +72,13 @@ namespace Process_Spy {
         //
         public List<Pid> Pids { get { return _Pids; } }
         public int Count { get { return _Pids.Count; } }
-        public void Clear() { _Pids.Clear(); }
-        public void Add(Pid t) { _Pids.Add(t); }
 
         // Functions
         //
+        public void Clear() { _Pids.Clear(); }
+        public void Add(Pid t) { _Pids.Add(t); }
+        public void Reverse() { _Pids.Reverse(); }
+
         public Pid Find(int Search, PidFields SearchType) {
             return Find(Search.ToString(), SearchType);
         }

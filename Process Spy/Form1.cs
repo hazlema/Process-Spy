@@ -111,12 +111,14 @@ namespace Process_Spy {
         // TODO: Re-parent orphans
         //
         private void PruneBranches(PidList Updates) {
+            Updates.Reverse();
+
             foreach (Pid p in Updates) {
                 TreeNode[] t = PidTree.Nodes.Find(p.Id.ToString(), true);
 
-                if (t.Length != 0) {
-                    Running.Remove(p.Id, PidFields.Id);
-                    t[0].Remove();
+                if (t.Length >= 0) {
+                    try { t[0].Remove(); } catch { }      // May have killed parent fist 
+                    Running.Remove(p.Id, PidFields.Id);   // killing the decedents
                 }
             }
         }
