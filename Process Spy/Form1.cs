@@ -133,24 +133,42 @@ namespace Process_Spy {
         //
         private new void ContextMenu(object sender, EventArgs e) {
             string cmd = ((ToolStripMenuItem)sender).Text;
+            PidList kill;
+            UpdatePids.Enabled = false;  // Stop Auto refresh
 
             switch (cmd) {
                 case "Kill Process":
+                    // Will re parent any orphans
+                    //
+                    kill = PidTree.GeneratePidList(Running);
+                    foreach (Pid p in kill)
+                        Running.Remove(p.Id, PidFields.Id);
+
+                    // Kill it
+                    //
                     int pid = Convert.ToInt32(PidTree.LastNode.Name);
                     try {
                         Process.GetProcessById(pid).Kill();
                     } catch { }
+
+                    PidTree.LastNode.Remove();
                     break;
 
                 case "Kill Process Tree":
-                    foreach (Pid p in PidTree.GeneratePidList(Running))
+                    kill = PidTree.GeneratePidList(Running);
+
+                    foreach (Pid p in kill)
                         try {
+                            Running.Remove(p.Id, PidFields.Id);
                             Process.GetProcessById(p.Id).Kill();
-                        } catch { } 
+                        } catch { }
+
+                    PidTree.LastNode.Remove();
                     break;
             }
 
             TreeRefresh(false);
+            UpdatePids.Enabled = true;  // Start Auto refresh
         }
     }
 }
