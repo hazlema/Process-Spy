@@ -6,7 +6,6 @@ namespace Process_Spy {
     public partial class Form1 : Form {
 
         PidList Running = new PidList();
-        TreeNode CurrentNode;
 
         public Form1() {
             InitializeComponent();
@@ -54,7 +53,7 @@ namespace Process_Spy {
                 
                 TreeNode[] t = PidTree.Nodes.Find("0", true);  // Expand Idle
                 t[0].Expand();
-                CurrentNode = t[0];
+                PidTree.LastNode = t[0];
                 txtProcessID.Text = $"Idle (0)";
 
                 // Expand Explorer
@@ -66,7 +65,7 @@ namespace Process_Spy {
 
                     txtProcessID.Text = $"{tmpPid.Name} ({tmpPid.Id})";
                     PidTree.SelectedNode = t[0];
-                    CurrentNode = t[0];
+                    PidTree.LastNode = t[0];
                     t[0].EnsureVisible();
                 }
             }
@@ -126,7 +125,6 @@ namespace Process_Spy {
         //
         private void NodeClick(object sender, TreeNodeMouseClickEventArgs e) {
             txtProcessID.Text = $"{e.Node.Text} ({e.Node.Name})";
-            CurrentNode = e.Node;
         }
 
         // UI: Selected something from the context menu
@@ -136,13 +134,17 @@ namespace Process_Spy {
 
             switch (cmd) {
                 case "Kill Process":
-                    int pid = Convert.ToInt32(CurrentNode.Name);
-
-                    Process.GetProcessById(pid).Kill();
+                    int pid = Convert.ToInt32(PidTree.LastNode.Name);
+                    try { Process.GetProcessById(pid).Kill(); } catch { }
                     break;
 
-                case "Kill Process Tree": break;
+                case "Kill Process Tree":
+                    foreach (Pid p in PidTree.GeneratePidList(Running))
+                        try { Process.GetProcessById(p.Id).Kill(); } catch { }
+                    break;
             }
+
+            TreeRefresh(false);
         }
     }
 }

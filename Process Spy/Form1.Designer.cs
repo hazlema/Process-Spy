@@ -25,35 +25,17 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.PidTree = new System.Windows.Forms.TreeView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxKill = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxKillTree = new System.Windows.Forms.ToolStripMenuItem();
+            this.UpdatePids = new System.Windows.Forms.Timer(this.components);
+            this.PidTree = new Process_Spy.cTreeView();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.txtProcessID = new System.Windows.Forms.ToolStripStatusLabel();
             this.txtProcessCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.UpdatePids = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // PidTree
-            // 
-            this.PidTree.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.PidTree.ContextMenuStrip = this.contextMenuStrip1;
-            this.PidTree.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PidTree.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PidTree.ForeColor = System.Drawing.Color.White;
-            this.PidTree.FullRowSelect = true;
-            this.PidTree.Indent = 25;
-            this.PidTree.ItemHeight = 22;
-            this.PidTree.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
-            this.PidTree.Location = new System.Drawing.Point(0, 0);
-            this.PidTree.Margin = new System.Windows.Forms.Padding(12, 12, 12, 12);
-            this.PidTree.Name = "PidTree";
-            this.PidTree.Size = new System.Drawing.Size(314, 389);
-            this.PidTree.TabIndex = 0;
-            this.PidTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.NodeClick);
             // 
             // contextMenuStrip1
             // 
@@ -76,6 +58,26 @@
             this.ctxKillTree.Size = new System.Drawing.Size(159, 22);
             this.ctxKillTree.Text = "Kill Process Tree";
             this.ctxKillTree.Click += new System.EventHandler(this.ContextMenu);
+            // 
+            // UpdatePids
+            // 
+            this.UpdatePids.Enabled = true;
+            this.UpdatePids.Interval = 5000;
+            this.UpdatePids.Tick += new System.EventHandler(this.UpdatePids_Tick);
+            // 
+            // PidTree
+            // 
+            this.PidTree.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.PidTree.ContextMenuStrip = this.contextMenuStrip1;
+            this.PidTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PidTree.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PidTree.ForeColor = System.Drawing.Color.White;
+            this.PidTree.LastNode = null;
+            this.PidTree.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(10)))), ((int)(((byte)(10)))));
+            this.PidTree.Location = new System.Drawing.Point(0, 0);
+            this.PidTree.Name = "PidTree";
+            this.PidTree.Size = new System.Drawing.Size(314, 389);
+            this.PidTree.TabIndex = 3;
             // 
             // statusStrip1
             // 
@@ -105,12 +107,6 @@
             this.txtProcessCount.Text = "Loading";
             this.txtProcessCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // UpdatePids
-            // 
-            this.UpdatePids.Enabled = true;
-            this.UpdatePids.Interval = 5000;
-            this.UpdatePids.Tick += new System.EventHandler(this.UpdatePids_Tick);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -135,15 +131,14 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TreeView PidTree;
-        private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel txtProcessID;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem ctxKill;
         private System.Windows.Forms.ToolStripMenuItem ctxKillTree;
-        private System.Windows.Forms.ToolStripStatusLabel txtProcessCount;
         private System.Windows.Forms.Timer UpdatePids;
+        private cTreeView PidTree;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel txtProcessID;
+        private System.Windows.Forms.ToolStripStatusLabel txtProcessCount;
     }
 }
 
