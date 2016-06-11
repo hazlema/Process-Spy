@@ -135,12 +135,16 @@ namespace Process_Spy {
             switch (cmd) {
                 case "Kill Process":
                     int pid = Convert.ToInt32(PidTree.LastNode.Name);
-                    try { Process.GetProcessById(pid).Kill(); } catch { }
+                    try {
+                        Process.GetProcessById(pid).Kill();
+                    } catch { }
                     break;
 
                 case "Kill Process Tree":
                     foreach (Pid p in PidTree.GeneratePidList(Running))
-                        try { Process.GetProcessById(p.Id).Kill(); } catch { }
+                        try {
+                            Process.GetProcessById(p.Id).Kill();
+                        } catch { } 
                     break;
             }
 

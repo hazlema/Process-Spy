@@ -78,6 +78,7 @@
             this.PidTree.Name = "PidTree";
             this.PidTree.Size = new System.Drawing.Size(314, 389);
             this.PidTree.TabIndex = 3;
+            this.PidTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.NodeClick);
             // 
             // statusStrip1
             // 
@@ -129,7 +130,6 @@
             this.PerformLayout();
 
         }
-
         #endregion
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem ctxKill;
